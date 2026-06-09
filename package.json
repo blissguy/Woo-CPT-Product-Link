@@ -1,7 +1,7 @@
 {
   "name": "woo-cpt-product-link",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
-  "description": "Link custom post types to WooCommerce products and render linked product data.",
+  "description": "Link custom post type entries to WooCommerce products.",
   "license": "GPL-2.0-or-later"
 }

@@ -85,28 +85,34 @@ jobs:
           unzip -l "$ZIP_NAME"
           echo "zip-name=${ZIP_NAME}" >> "$GITHUB_OUTPUT"
 
-      - name: Prepare release notes
+      - name: Build release notes from changelog
         if: steps.check.outputs.exists == 'false'
         run: |
           set -euo pipefail
 
           VERSION="${{ steps.ver.outputs.version }}"
-
-          awk -v version="$VERSION" '
-            $0 == "== Changelog ==" { in_changelog = 1; next }
-            in_changelog && $0 == "= " version " =" { in_version = 1; next }
-            in_version && /^= [^=]+ =$/ { exit }
-            in_version { print }
-          ' readme.txt | sed '/^[[:space:]]*$/d' > release-notes.md
-
-          if [ ! -s release-notes.md ]; then
-            echo "Automated release for version ${VERSION}." > release-notes.md
-          fi
+          README_URL="https://github.com/${GITHUB_REPOSITORY}/blob/${GITHUB_SHA}/readme.txt"
 
           {
+            echo "Woo CPT Product Link ${VERSION}"
             echo
-            echo "Full changelog: https://github.com/blissguy/Woo-CPT-Product-Link/blob/main/readme.txt"
-          } >> release-notes.md
+            awk -v version="$VERSION" '
+              BEGIN { in_changelog = 0; in_version = 0; }
+              /^==[[:space:]]*Changelog[[:space:]]*==/ { in_changelog = 1; next; }
+              in_changelog && /^==[[:space:]]+[^=]+[[:space:]]*==/ { if (in_version) exit; next; }
+              in_changelog && $0 ~ "^=[[:space:]]*" version "[[:space:]]*=$" { in_version = 1; next; }
+              in_changelog && in_version && /^=[[:space:]]+[^=]+[[:space:]]*=$/ { exit; }
+              in_changelog && in_version { print; }
+            ' readme.txt | sed '/^[[:space:]]*$/d' > changelog-section.txt
+
+            if [ -s changelog-section.txt ]; then
+              cat changelog-section.txt
+            else
+              echo "Automated release for version ${VERSION}."
+              echo
+              echo "See the readme.txt changelog: ${README_URL}"
+            fi
+          } > release-notes.md
 
           cat release-notes.md
 
