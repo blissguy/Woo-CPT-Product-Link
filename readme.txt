@@ -4,7 +4,7 @@ Tags: woocommerce, custom post type, bricks, dynamic data
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,6 +21,11 @@ Woo CPT Product Link lets selected public custom post types reference real WooCo
 3. Open WooCommerce > Woo CPT Product Link and choose which public post types can link products.
 
 == Changelog ==
+
+= 1.1.0 =
+* Split the plugin into single-responsibility classes under src/ with an autoloader (no behavior change).
+* Added extra_class="..." to [wcpl_add_to_cart] and [wcpl_buy_now] to append custom classes while keeping the defaults.
+* Documented label="..." for renaming the add-to-cart and buy-now buttons.
 
 = 1.0.1 =
 * Initial development release.
