@@ -1,0 +1,10 @@
+.DS_Store
+.git
+.github
+.distignore
+.gitignore
+build
+node_modules
+package-lock.json
+phpcs.xml
+phpstan.neon
