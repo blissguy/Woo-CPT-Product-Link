@@ -55,9 +55,10 @@ final class Settings {
 	 */
 	public static function default_settings() {
 		return array(
-			'post_types'     => array(),
-			'default_target' => 'cart',
-			'form_outputs'   => array(
+			'post_types'      => array(),
+			'default_target'  => 'cart',
+			'variable_target' => 'checkout',
+			'form_outputs'    => array(
 				'variation_description'  => true,
 				'variation_price'        => true,
 				'variation_availability' => true,
@@ -106,17 +107,19 @@ final class Settings {
 			}
 		}
 
-		$target       = isset( $input['default_target'] ) ? sanitize_key( $input['default_target'] ) : 'cart';
-		$form_outputs = array();
+		$target          = isset( $input['default_target'] ) ? sanitize_key( $input['default_target'] ) : 'cart';
+		$variable_target = isset( $input['variable_target'] ) ? sanitize_key( $input['variable_target'] ) : 'checkout';
+		$form_outputs    = array();
 
 		foreach ( self::form_output_options() as $key => $label ) {
 			$form_outputs[ $key ] = ! empty( $input['form_outputs'][ $key ] );
 		}
 
 		return array(
-			'post_types'     => array_values( array_unique( $post_types ) ),
-			'default_target' => in_array( $target, array( 'cart', 'checkout' ), true ) ? $target : 'cart',
-			'form_outputs'   => $form_outputs,
+			'post_types'      => array_values( array_unique( $post_types ) ),
+			'default_target'  => in_array( $target, array( 'cart', 'checkout' ), true ) ? $target : 'cart',
+			'variable_target' => in_array( $variable_target, array( 'cart', 'checkout' ), true ) ? $variable_target : 'checkout',
+			'form_outputs'    => $form_outputs,
 		);
 	}
 
@@ -162,12 +165,23 @@ final class Settings {
 						</td>
 					</tr>
 					<tr>
-						<th scope="row"><?php esc_html_e( 'Default button target', 'woo-cpt-product-link' ); ?></th>
+						<th scope="row"><?php esc_html_e( 'Simple product button target', 'woo-cpt-product-link' ); ?></th>
 						<td>
 							<select name="<?php echo esc_attr( self::OPTION_NAME ); ?>[default_target]">
 								<option value="cart" <?php selected( 'cart', $settings['default_target'] ); ?>><?php esc_html_e( 'Cart page', 'woo-cpt-product-link' ); ?></option>
 								<option value="checkout" <?php selected( 'checkout', $settings['default_target'] ); ?>><?php esc_html_e( 'Checkout page', 'woo-cpt-product-link' ); ?></option>
 							</select>
+							<p class="description"><?php esc_html_e( 'Where the button sends visitors for simple products.', 'woo-cpt-product-link' ); ?></p>
+						</td>
+					</tr>
+					<tr>
+						<th scope="row"><?php esc_html_e( 'Variable product button target', 'woo-cpt-product-link' ); ?></th>
+						<td>
+							<select name="<?php echo esc_attr( self::OPTION_NAME ); ?>[variable_target]">
+								<option value="cart" <?php selected( 'cart', $settings['variable_target'] ); ?>><?php esc_html_e( 'Cart page', 'woo-cpt-product-link' ); ?></option>
+								<option value="checkout" <?php selected( 'checkout', $settings['variable_target'] ); ?>><?php esc_html_e( 'Checkout page', 'woo-cpt-product-link' ); ?></option>
+							</select>
+							<p class="description"><?php esc_html_e( 'Where visitors are sent after selecting variations and submitting a variable or grouped product form.', 'woo-cpt-product-link' ); ?></p>
 						</td>
 					</tr>
 					<tr>
@@ -195,7 +209,7 @@ final class Settings {
 			<h2><?php esc_html_e( 'Template usage', 'woo-cpt-product-link' ); ?></h2>
 			<p><code>[wcpl_price]</code> <?php esc_html_e( 'renders the referenced product price.', 'woo-cpt-product-link' ); ?></p>
 			<p><code>[wcpl_selected_variation_price]</code> <?php esc_html_e( 'renders a price placeholder that updates when a variable product option is selected.', 'woo-cpt-product-link' ); ?></p>
-			<p><code>[wcpl_add_to_cart]</code> <?php esc_html_e( 'renders a button using the default target.', 'woo-cpt-product-link' ); ?></p>
+			<p><code>[wcpl_add_to_cart]</code> <?php esc_html_e( 'renders a button using the simple or variable product target above, based on the product type. Add target="cart" or target="checkout" to override.', 'woo-cpt-product-link' ); ?></p>
 			<p><code>[wcpl_buy_now]</code> <?php esc_html_e( 'renders a checkout button.', 'woo-cpt-product-link' ); ?></p>
 			<p><?php esc_html_e( 'Both buttons accept label="Custom text" to rename them, class="..." to replace the default classes, and extra_class="..." to append your own classes while keeping the defaults.', 'woo-cpt-product-link' ); ?></p>
 			<p><code>[wcpl_product field="title"]</code> <?php esc_html_e( 'renders fields such as title, type, sku, price, short_description, description, stock_status, availability, id, image, and permalink.', 'woo-cpt-product-link' ); ?></p>

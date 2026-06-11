@@ -37,6 +37,13 @@ final class Cart_Button_Renderer {
 	private $selected_variation_price_script_printed = false;
 
 	/**
+	 * Whether the AJAX bypass script has already been printed.
+	 *
+	 * @var bool
+	 */
+	private $form_ajax_bypass_script_printed = false;
+
+	/**
 	 * Render an add-to-cart or checkout button.
 	 *
 	 * @param array $atts Parsed attributes.
@@ -50,7 +57,7 @@ final class Cart_Button_Renderer {
 		}
 
 		$quantity    = max( 1, absint( $atts['quantity'] ) );
-		$target      = in_array( $atts['target'], array( 'cart', 'checkout' ), true ) ? $atts['target'] : 'cart';
+		$target      = in_array( $atts['target'], array( 'cart', 'checkout' ), true ) ? $atts['target'] : $this->get_default_target( $product );
 		$label       = $atts['label'] ? sanitize_text_field( $atts['label'] ) : $product->add_to_cart_text();
 		$extra_class = Util::sanitize_class_list( isset( $atts['extra_class'] ) ? $atts['extra_class'] : '' );
 		$class       = Util::sanitize_class_list( $atts['class'] . ' ' . $extra_class );
@@ -85,6 +92,22 @@ final class Cart_Button_Renderer {
 		}
 
 		return '<span class="wcpl-button-wrap">' . $button . '</span>';
+	}
+
+	/**
+	 * Resolve the configured target for a product when the shortcode does not set one.
+	 *
+	 * @param \WC_Product $product WooCommerce product.
+	 * @return string
+	 */
+	private function get_default_target( $product ) {
+		$settings = Settings::get_settings();
+
+		if ( $product->is_type( array( 'variable', 'grouped' ) ) ) {
+			return in_array( $settings['variable_target'], array( 'cart', 'checkout' ), true ) ? $settings['variable_target'] : 'checkout';
+		}
+
+		return in_array( $settings['default_target'], array( 'cart', 'checkout' ), true ) ? $settings['default_target'] : 'cart';
 	}
 
 	/**
@@ -157,6 +180,7 @@ final class Cart_Button_Renderer {
 		);
 		$this->render_form_output_styles();
 		woocommerce_template_single_add_to_cart();
+		$this->render_form_ajax_bypass_script();
 		echo '</div>';
 		$output = ob_get_clean();
 
@@ -223,6 +247,37 @@ final class Cart_Button_Renderer {
 				display: none !important;
 			}
 		</style>
+		<?php
+	}
+
+	/**
+	 * Keep theme AJAX add-to-cart handlers (e.g. Bricks) off our forms so they
+	 * submit natively and the configured redirect target applies. Printed once.
+	 */
+	private function render_form_ajax_bypass_script() {
+		if ( $this->form_ajax_bypass_script_printed ) {
+			return;
+		}
+
+		$this->form_ajax_bypass_script_printed = true;
+		?>
+		<script>
+		document.addEventListener('click', function (event) {
+			if (!event.target || !event.target.closest) {
+				return;
+			}
+
+			var button = event.target.closest('.wcpl-add-to-cart-form form.cart .single_add_to_cart_button');
+
+			if (!button || button.classList.contains('disabled')) {
+				return;
+			}
+
+			// Capture phase: the click never reaches theme AJAX handlers bound on
+			// the button, but the native form submit still happens.
+			event.stopPropagation();
+		}, true);
+		</script>
 		<?php
 	}
 

@@ -103,11 +103,10 @@ final class Shortcodes {
 	 * @return string
 	 */
 	public function add_to_cart_shortcode( $atts ) {
-		$settings = Settings::get_settings();
-		$atts     = shortcode_atts(
+		$atts = shortcode_atts(
 			array(
 				'label'       => '',
-				'target'      => $settings['default_target'],
+				'target'      => '',
 				'quantity'    => 1,
 				'class'       => 'button wcpl-add-to-cart',
 				'extra_class' => '',
