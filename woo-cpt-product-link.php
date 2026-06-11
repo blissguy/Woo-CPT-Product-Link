@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Woo CPT Product Link
  * Description: Link custom post type entries to real WooCommerce products and render product price, details, add-to-cart, or buy-now controls from CPT templates.
- * Version: 1.2.0
+ * Version: 1.3.0
  * Author: MixbusMarketing
  * Author URI: https://mixbusmarketing.com/
  * Plugin URI: https://github.com/blissguy/Woo-CPT-Product-Link
@@ -18,7 +18,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'WCPL_VERSION', '1.2.0' );
+define( 'WCPL_VERSION', '1.3.0' );
 define( 'WCPL_PLUGIN_FILE', __FILE__ );
 define( 'WCPL_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 

@@ -211,7 +211,8 @@ final class Settings {
 			<p><code>[wcpl_selected_variation_price]</code> <?php esc_html_e( 'renders a price placeholder that updates when a variable product option is selected.', 'woo-cpt-product-link' ); ?></p>
 			<p><code>[wcpl_add_to_cart]</code> <?php esc_html_e( 'renders a button using the simple or variable product target above, based on the product type. Add target="cart" or target="checkout" to override.', 'woo-cpt-product-link' ); ?></p>
 			<p><code>[wcpl_buy_now]</code> <?php esc_html_e( 'renders a checkout button.', 'woo-cpt-product-link' ); ?></p>
-			<p><?php esc_html_e( 'Both buttons accept label="Custom text" to rename them, class="..." to replace the default classes, and extra_class="..." to append your own classes while keeping the defaults.', 'woo-cpt-product-link' ); ?></p>
+			<p><?php esc_html_e( 'Both buttons accept label="Custom text" to rename them and class="..." to replace the default classes.', 'woo-cpt-product-link' ); ?></p>
+			<p><?php esc_html_e( 'All shortcodes accept extra_class="..." to append your own classes while keeping the defaults. For [wcpl_product] the output is wrapped in a span with your classes only when extra_class is set.', 'woo-cpt-product-link' ); ?></p>
 			<p><code>[wcpl_product field="title"]</code> <?php esc_html_e( 'renders fields such as title, type, sku, price, short_description, description, stock_status, availability, id, image, and permalink.', 'woo-cpt-product-link' ); ?></p>
 			<p><?php esc_html_e( 'Bricks dynamic tags: {wcpl_has_product}, {wcpl_product_type}, {wcpl_product_price}, {wcpl_product_title}, {wcpl_product_url}, {wcpl_product_id}, {wcpl_product_sku}, {wcpl_product_stock}.', 'woo-cpt-product-link' ); ?></p>
 		</div>

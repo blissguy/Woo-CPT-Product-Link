@@ -48,13 +48,26 @@ final class Shortcodes {
 	 * @return string
 	 */
 	public function price_shortcode( $atts ) {
+		$atts = shortcode_atts(
+			array(
+				'post_id'     => 0,
+				'product'     => 0,
+				'product_id'  => 0,
+				'extra_class' => '',
+			),
+			$atts,
+			'wcpl_price'
+		);
+
 		$product = Product_Resolver::get_product_from_atts( $atts );
 
 		if ( ! $product ) {
 			return '';
 		}
 
-		return '<span class="wcpl-product-price">' . wp_kses_post( $product->get_price_html() ) . '</span>';
+		$class = Util::sanitize_class_list( 'wcpl-product-price ' . $atts['extra_class'] );
+
+		return '<span class="' . esc_attr( $class ) . '">' . wp_kses_post( $product->get_price_html() ) . '</span>';
 	}
 
 	/**
@@ -66,10 +79,11 @@ final class Shortcodes {
 	public function selected_variation_price_shortcode( $atts ) {
 		$atts = shortcode_atts(
 			array(
-				'post_id'  => 0,
-				'product'  => 0,
-				'fallback' => 'price',
-				'class'    => 'wcpl-selected-variation-price',
+				'post_id'     => 0,
+				'product'     => 0,
+				'fallback'    => 'price',
+				'class'       => 'wcpl-selected-variation-price',
+				'extra_class' => '',
 			),
 			$atts,
 			'wcpl_selected_variation_price'
@@ -82,7 +96,7 @@ final class Shortcodes {
 		}
 
 		$fallback = 'empty' === sanitize_key( $atts['fallback'] ) ? '' : $product->get_price_html();
-		$classes  = array_unique( array_filter( preg_split( '/\s+/', 'wcpl-selected-variation-price ' . Util::sanitize_class_list( $atts['class'] ) ) ) );
+		$classes  = array_unique( array_filter( preg_split( '/\s+/', 'wcpl-selected-variation-price ' . Util::sanitize_class_list( $atts['class'] . ' ' . $atts['extra_class'] ) ) ) );
 		$class    = implode( ' ', $classes );
 
 		$output = sprintf(
@@ -157,10 +171,11 @@ final class Shortcodes {
 	public function product_shortcode( $atts ) {
 		$atts = shortcode_atts(
 			array(
-				'field'   => 'title',
-				'post_id' => 0,
-				'product' => 0,
-				'size'    => 'woocommerce_thumbnail',
+				'field'       => 'title',
+				'post_id'     => 0,
+				'product'     => 0,
+				'size'        => 'woocommerce_thumbnail',
+				'extra_class' => '',
 			),
 			$atts,
 			'wcpl_product'
@@ -172,6 +187,16 @@ final class Shortcodes {
 			return '';
 		}
 
-		return Product_Field_Renderer::render( $product, sanitize_key( $atts['field'] ), sanitize_key( $atts['size'] ) );
+		$field       = sanitize_key( $atts['field'] );
+		$output      = Product_Field_Renderer::render( $product, $field, sanitize_key( $atts['size'] ) );
+		$extra_class = Util::sanitize_class_list( $atts['extra_class'] );
+
+		if ( '' === $output || '' === $extra_class ) {
+			return $output;
+		}
+
+		$class = Util::sanitize_class_list( 'wcpl-product-field wcpl-product-field--' . $field . ' ' . $extra_class );
+
+		return '<span class="' . esc_attr( $class ) . '">' . $output . '</span>';
 	}
 }

@@ -4,7 +4,7 @@ Tags: woocommerce, custom post type, bricks, dynamic data
 Requires at least: 6.0
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -21,6 +21,11 @@ Woo CPT Product Link lets selected public custom post types reference real WooCo
 3. Open WooCommerce > Woo CPT Product Link and choose which public post types can link products.
 
 == Changelog ==
+
+= 1.3.0 =
+* Extended extra_class="..." support to all shortcodes: [wcpl_price] and [wcpl_selected_variation_price] append to their default classes.
+* [wcpl_product] wraps its output in a span with wcpl-product-field classes plus your own, but only when extra_class is set; output is unchanged otherwise.
+* [wcpl_price] now also accepts product_id="..." like the button shortcodes.
 
 = 1.2.0 =
 * Added a separate "Variable product button target" setting (defaults to checkout); the existing target setting now applies to simple products only.
